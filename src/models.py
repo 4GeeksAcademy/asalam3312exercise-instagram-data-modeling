@@ -6,24 +6,48 @@ from sqlalchemy import create_engine
 from eralchemy2 import render_er
 
 Base = declarative_base()
+class Follower(Base):
+    __tablename__= 'follower'
+    id = Column(Integer, primary_key=True)
+    user_from_id = Column()
+    user_to_id = Column()
 
-class Person(Base):
-    __tablename__ = 'person'
+class User(Base):
+    __tablename__ = 'user'
     # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    username = Column(String(250), nullable=False)
+    first_name = Column(String(100), nullable=False)
+    Last_name = Column(String(100), nullable=False)
+    email = Column(String(100), nullable=False)
+    pasword = Column(String(100), nullable=False)
+    follower_id = Column(Integer, ForeignKey('follower.id'))
+    Follower = relationship(Follower)
 
-class Address(Base):
+class Post(Base):
+    __tablename__ = 'post'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
+
+class Media(Base):
     __tablename__ = 'address'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    type = Column(String(100), nullable=False)
+    url = Column(String(100), nullable=False)
+    post_id = Column(Integer, ForeignKey('post.id'))
+    post = relationship(Post)
+
+class Comment(Base):
+    __tablename__ = 'coment'
+    id = Column(Integer, primary_key=True)
+    author_id = Column(Integer, ForeignKey('user.id'))
+    author = relationship(User)
+    post_id = Column(Integer, ForeignKey('post.id'))
+    post = relationship(Post)
 
     def to_dict(self):
         return {}
